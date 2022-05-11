@@ -5,8 +5,7 @@
 struct NewPlayerPacket
 {
 	char playerName[32];
-	float positionX;
-	float positionY;
+	char message[128];
 };
 
 void Host()
@@ -18,13 +17,18 @@ void Host()
 
 	ENetHost* serverHost = enet_host_create(&hostAddress, 32, 2, 0, 0);
 
+	if (serverHost == NULL)
+	{
+		std::cout << "An error occured while trying to create the host." << std::endl;
+		return;
+	}
+
 	while(true)
 	{
 		ENetEvent receivedEvent;
 
 		while (enet_host_service(serverHost, &receivedEvent, 100) > 0)
 		{
-			std::cout << "Received a packet!" << std::endl;
 			switch (receivedEvent.type)
 			{
 				case ENET_EVENT_TYPE_CONNECT:
@@ -37,11 +41,9 @@ void Host()
 				
 				case ENET_EVENT_TYPE_RECEIVE:
 				{
-					std::cout << "Received user defined packet." << std::endl;
 					ENetPacket* receivedPacket = receivedEvent.packet;
 					NewPlayerPacket* info = (NewPlayerPacket*)receivedPacket->data;
-					std::cout << "A new player, " << info->playerName << ", has joined at (";
-					std::cout << info->positionX << ", " << info->positionY << ")!" << std::endl;
+					std::cout << "A new player, " << info->playerName << ", has joined. They say: \"" << info->message << "\"" << std::endl;
 				}
 					break;
 				
@@ -60,8 +62,10 @@ void Client()
 	std::cout << "What is your name?" << std::endl;
 	std::string name;
 	std::cin >> name;
-	if (name.length() > 31)
-		name[31] = '\0';
+
+	std::cout << "What do you want to say? (127 character limit)" << std::endl;
+	std::string sentMessage;
+	std::cin >> sentMessage;
 
 	std::cout << "Which IP do you want to connect to?" << std::endl;
 	std::string ipAddress;
@@ -70,9 +74,16 @@ void Client()
 
 	ENetHost* clientHost = enet_host_create(nullptr, 1, 2, 0, 0);
 
+	if (clientHost == NULL)
+	{
+		std::cout << "An error occured while trying to create the client." << std::endl;
+		return;
+	}
+
 	ENetAddress address;
 	address.port = 1234;
 	enet_address_set_host(&address, ipAddress.c_str());
+	
 
 	enet_host_connect(clientHost, &address, 2, 5000);
 
@@ -83,7 +94,6 @@ void Client()
 
 		while (enet_host_service(clientHost, &receivedEvent, 100) > 0)
 		{
-			std::cout << "Client received a packet." << std::endl;
 			switch(receivedEvent.type)
 			{
 				case ENET_EVENT_TYPE_CONNECT:
@@ -91,9 +101,8 @@ void Client()
 					serverPeer = receivedEvent.peer;
 					{
 						NewPlayerPacket playerInfo;
-						strncpy_s(playerInfo.playerName, name.c_str(), 32);
-						playerInfo.positionX = 3.0f;
-						playerInfo.positionY = 4.0f;
+						strncpy_s(playerInfo.playerName, name.c_str(), min(32, name.size()));
+						strncpy_s(playerInfo.message, sentMessage.c_str(), min(128, sentMessage.size()));
 
 						ENetPacket *infoPacket = enet_packet_create(&playerInfo, sizeof(NewPlayerPacket), ENET_PACKET_FLAG_RELIABLE);
 						enet_peer_send(serverPeer, 0, infoPacket);
