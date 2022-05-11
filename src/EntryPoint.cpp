@@ -2,7 +2,12 @@
 #include <iostream>
 #include <string>
 
-#define IS_HOST false
+struct NewPlayerPacket
+{
+	char playerName[32];
+	float positionX;
+	float positionY;
+};
 
 void Host()
 {
@@ -24,19 +29,25 @@ void Host()
 			{
 				case ENET_EVENT_TYPE_CONNECT:
 					std::cout << "A new client connected to the server." << std::endl;
-				break;
+					break;
 				
 				case ENET_EVENT_TYPE_DISCONNECT:
 					std::cout << "A client disconnected from the server." << std::endl;
-				break;
+					break;
 				
 				case ENET_EVENT_TYPE_RECEIVE:
+				{
 					std::cout << "Received user defined packet." << std::endl;
-				break;
+					ENetPacket* receivedPacket = receivedEvent.packet;
+					NewPlayerPacket* info = (NewPlayerPacket*)receivedPacket->data;
+					std::cout << "A new player, " << info->playerName << ", has joined at (";
+					std::cout << info->positionX << ", " << info->positionY << ")!" << std::endl;
+				}
+					break;
 				
 				default:
 					std::cout << "UNKNOWN." << std::endl;
-				break;
+					break;
 			}
 		}
 	}
@@ -45,6 +56,12 @@ void Host()
 void Client()
 {
 	std::cout << "Creating a client..." << std::endl;
+
+	std::cout << "What is your name?" << std::endl;
+	std::string name;
+	std::cin >> name;
+	if (name.length() > 31)
+		name[31] = '\0';
 
 	std::cout << "Which IP do you want to connect to?" << std::endl;
 	std::string ipAddress;
@@ -62,6 +79,7 @@ void Client()
 	while (true)
 	{
 		ENetEvent receivedEvent;
+		ENetPeer *serverPeer = nullptr;
 
 		while (enet_host_service(clientHost, &receivedEvent, 100) > 0)
 		{
@@ -70,19 +88,29 @@ void Client()
 			{
 				case ENET_EVENT_TYPE_CONNECT:
 					std::cout << "Connected to server!" << std::endl;
-				break;
+					serverPeer = receivedEvent.peer;
+					{
+						NewPlayerPacket playerInfo;
+						strncpy_s(playerInfo.playerName, name.c_str(), 32);
+						playerInfo.positionX = 3.0f;
+						playerInfo.positionY = 4.0f;
+
+						ENetPacket *infoPacket = enet_packet_create(&playerInfo, sizeof(NewPlayerPacket), ENET_PACKET_FLAG_RELIABLE);
+						enet_peer_send(serverPeer, 0, infoPacket);
+					}
+					break;
 				
 				case ENET_EVENT_TYPE_DISCONNECT:
 					std::cout << "Disconnected from server." << std::endl;
-				break;
+					break;
 				
 				case ENET_EVENT_TYPE_RECEIVE:
 					std::cout << "Received user defined packet." << std::endl;
-				break;
+					break;
 				
 				default:
 					std::cout << "UNKNOWN." << std::endl;
-				break;
+					break;
 			}
 		}
 	}
