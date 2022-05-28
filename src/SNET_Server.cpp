@@ -1,4 +1,4 @@
-#include "StrafenetServer.h"
+#include "SNET_Server.h"
 #include <iostream>
 
 void StrafeNetServer::AddPlayer(const int id)
