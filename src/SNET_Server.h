@@ -4,7 +4,9 @@
 #include "SNET_IDPool.h"
 #include <unordered_map>
 
-class SNET_ConnectedUser;
+#include "SNET_Typedefs.h"
+
+struct SNET_ConnectedUser;
 class SNET_NetworkedPlayer;
 class SNET_NetworkedEntity;
 class SNET_Leaderboard;
@@ -20,15 +22,16 @@ private:
 	std::unordered_map<UINT16, SNET_NetworkedPlayer*> players;
 	std::unordered_map<UINT16, SNET_NetworkedEntity*> entities;
 
-	void ReceivedPlayerPacket(ENetEvent* event);
-	void ReceivedConnectionPacket(ENetEvent* event);
-	void ReceivedLeaderboardPacket(ENetEvent* event);
+	void ReceivedPacket(const ENetEvent* const event);
+	void ReceivedConnectionPacket(const ENetEvent* const event);
+	void ReceivedEntityPacket(const ENetEvent* const event);
+	void ReceivedLeaderboardPacket(const ENetEvent* const event);
 
-	void AddConnectedUser(ENetPeer* const peer);
-	void RemoveConnectedUser(ENetPeer* const peer);
+	void AddConnectedUser(const ENetPeer* const peer);
+	void RemoveConnectedUser(const ENetPeer* const peer);
 
-	void AddPlayer(SNET_ConnectedUser* const user);
-	void RemovePlayer(UINT16 id);
+	void AddPlayer(const SNET_ConnectedUser* const user);
+	void RemovePlayer(const UINT16 id);
 
 	void UpdatePingValues();
 	void BroadcastData();
@@ -36,12 +39,12 @@ private:
 	void VerifyAndApplyPlayerData();
 
 public:
-	SNET_Server();
+	SNET_Server() = default;
 	~SNET_Server();
 
 	int Initialise();
 	void Update();
-	bool HasPlayerJoined(const UINT16 id);
+	bool HasPlayerJoined(const UINT16 id) const;
 	
 	const int GetPlayerCount() const;
 };

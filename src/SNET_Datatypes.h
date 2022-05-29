@@ -1,4 +1,5 @@
 #include "enet/enet.h"
+#include <string>
 
 #define SNET_SERVERNAME_MAX 32
 #define SNET_USERNAME_MAX 32
@@ -13,7 +14,7 @@
 //		ENUMS
 // -----------------------------------------/
 
-enum SNET_ConnectionChannel : int
+enum SNET_Channel : int
 {
 	SNET_CHANNEL_CONNECTION,
 	SNET_CHANNEL_ENTITY_DATA,
@@ -23,13 +24,19 @@ enum SNET_ConnectionChannel : int
 	SNET_CHANNEL_COUNT
 };
 
-enum SNET_ConnectionType : char
+enum SNET_ConnectionType : UINT16
 {
 	SNET_CONTYPE_PLAYER_JOINED,
 	SNET_CONTYPE_PLAYER_LEFT,
 	SNET_CONTYPE_SERVERINFO,
 	SNET_CONTYPE_USERINFO,
 	SNET_CONTYPE_COUNT
+};
+
+enum SNET_EntityPacketType : UINT8
+{
+	SNET_ENTPACKET_ENTITY,
+	SNET_ENTPACKET_PLAYER
 };
 
 // -------------------------------------------
@@ -52,4 +59,12 @@ struct SNET_Vec4
 	: public SNET_Vec3
 {
 	float w;
+};
+
+struct SNET_ConnectedUser
+{
+	UINT16 id;
+	ENetPeer* peer;
+	std::string username;
+	std::string ip;
 };
