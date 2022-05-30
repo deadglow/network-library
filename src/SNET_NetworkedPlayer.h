@@ -18,7 +18,10 @@ public:
 
 	void PushPacketToHistory(const SNET_Packet_PlayerData packet);
 
-	SNET_Packet_PlayerData GetPacket(const int offset);
+	const size_t GetPacketCount() const;
 
+	SNET_Packet_PlayerData GetPacket(const int offset);
 	SNET_Packet_PlayerData GetInterpolatedPacket(const float t);
+
+	void OverridePacket(const int offset, const SNET_Packet_PlayerData& packet);
 };

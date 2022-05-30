@@ -24,7 +24,7 @@ struct SNET_Packet_EntityData
 	SNET_EntityPacketType type;
 	UINT16 id = 0;
 	SNET_Vec3 position;
-	SNET_Vec4 rotation;
+	SNET_Quat rotation;
 };
 
 struct SNET_Packet_PlayerData

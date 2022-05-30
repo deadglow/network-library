@@ -1,5 +1,4 @@
 #pragma once
-#include <vector>
 #include <queue>
 
 class SNET_IDPool

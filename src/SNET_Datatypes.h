@@ -1,4 +1,5 @@
 #include "enet/enet.h"
+#include "SNET_Typedefs.h"
 #include <string>
 
 #define SNET_SERVERNAME_MAX 32
@@ -45,20 +46,44 @@ enum SNET_EntityPacketType : UINT8
 
 struct SNET_Vec2
 {
-	float x;
-	float y;
+	float x = 0;
+	float y = 0;
+
+	SNET_Vec2();
+	SNET_Vec2(const float x_init, const float y_init)
+		: x(x_init), y(y_init) {};
 };
 
 struct SNET_Vec3
 	: public SNET_Vec2
 {
-	float z;
+	float z = 0;
+
+	SNET_Vec3();
+	SNET_Vec3(const float x_init, const float y_init, const float z_init)
+		: SNET_Vec2(x_init, y_init), z(z_init) {};
+	
 };
 
 struct SNET_Vec4
 	: public SNET_Vec3
 {
-	float w;
+	float w = 0;
+
+	SNET_Vec4();
+	SNET_Vec4(const float x_init, const float y_init, const float z_init, const float w_init)
+		: SNET_Vec3(x_init, y_init, z_init), w(w_init) {};
+};
+
+struct SNET_Quat
+	: public SNET_Vec4
+{
+	SNET_Quat()
+		: SNET_Vec4(0.0f, 0.0f, 0.0f, 1.0f) {};
+	SNET_Quat(const float x_init, const float y_init, const float z_init, const float w_init)
+		: SNET_Vec4(x_init, y_init, z_init, w_init) {};
+
+	
 };
 
 struct SNET_ConnectedUser
