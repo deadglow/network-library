@@ -1,5 +1,4 @@
 #include "enet/enet.h"
-#include "SNET_Typedefs.h"
 #include <string>
 
 #define SNET_SERVERNAME_MAX 32

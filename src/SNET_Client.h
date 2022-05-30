@@ -1,8 +1,8 @@
 #pragma once
 #include "enet/enet.h"
-#include "SNET_Packets.h"
 #include <vector>
 #include <unordered_map>
+#include "SNET_Typedefs.h"
 
 class SNET_NetworkedPlayer;
 class SNET_NetworkedEntity;
@@ -16,7 +16,7 @@ private:
 	std::string servername = "";
 	
 	bool connected = false;
-	bool joinedGame = false;
+	bool inGame = false;
 
 	ENetHost* host = nullptr;
 	ENetPeer* serverPeer = nullptr;
@@ -24,18 +24,20 @@ private:
 	SNET_Func_PlayerConnection playerAddCallback = nullptr;
 	SNET_Func_PlayerConnection playerRemoveCallback = nullptr;
 	SNET_Func_ApplyPlayerData playerApplyDataCallback = nullptr;
+	SNET_Func_GeneratePlayerData genPlayerDataCallback = nullptr;
 
 	// leaderboard
 	std::unordered_map<UINT16, SNET_NetworkedPlayer*> players;
 	std::unordered_map<UINT16, SNET_NetworkedEntity*> entities;
 
+	void ReceivedPacket(const ENetEvent* const event);
 	void ReceivedConnectionPacket(const ENetPacket* const packet);
 	void ReceivedEntityPacket(const ENetPacket* const packet);
 	void ReceivedLeaderboardPacket(const ENetPacket* const packet);
 	
 	void OnDisconnect();
 
-	void AddPlayer(const UINT16 id, const std::string playerUsername);
+	void AddPlayer(SNET_Packet_UserInfo userInfo);
 	void RemovePlayer(const UINT16 id);
 
 public:
@@ -43,12 +45,16 @@ public:
 	~SNET_Client();
 
 	int Initialise();
-	void SetCallbacks(SNET_Func_PlayerConnection onPlayerAdd, SNET_Func_PlayerConnection onPlayerRemove, SNET_Func_ApplyPlayerData onApplyPlayerData);
+	void SetCallbacks(SNET_Func_PlayerConnection onPlayerAdd,
+	SNET_Func_PlayerConnection onPlayerRemove,
+	SNET_Func_ApplyPlayerData onApplyPlayerData,
+	SNET_Func_GeneratePlayerData onGenPlayerData);
 	
+	bool IsConnected() const;
+	bool IsInGame() const;
+
 	bool Connect(const std::string ipAddress);
 	void Disconnect();
-
-	bool IsConnected();
 
 	SNET_NetworkedPlayer* GetPlayer(const UINT16 id);
 	SNET_NetworkedEntity* GetEntity(const UINT16 id);
