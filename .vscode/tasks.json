@@ -6,7 +6,25 @@
 			"type": "process",
 			"command": "${workspaceFolder}\\make_dir.bat",
 			"options": {
-				"cwd":"${workspaceFolder}"
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "none"
+		},
+		{
+			"label": "Create Lib/Include Folder",
+			"type": "process",
+			"command": "${workspaceFolder}\\make_deployment.bat",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "none"
+		},
+		{
+			"label": "Copy Lib/Include to FPS Project",
+			"type": "process",
+			"command": "${workspaceFolder}\\copy_to_fps_project.bat",
+			"options": {
+				"cwd": "${workspaceFolder}"
 			},
 			"group": "none"
 		},
@@ -17,11 +35,20 @@
 			"options": {
 				"cwd": "${workspaceFolder}"
 			},
-			"dependsOn":["Make Directories"],
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			}
+			"dependsOn": [
+				"Make Directories"
+			],
+			"group": "build",
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "Create and copy Lib/Include to FPS Project",
+			"dependsOn": [
+				"Create Lib/Include Folder",
+				"Copy Lib/Include to FPS Project"
+			],
+			"group": "none",
+			"problemMatcher": []
 		},
 		{
 			"label": "Release Batch Build",
@@ -30,8 +57,10 @@
 			"options": {
 				"cwd": "${workspaceFolder}"
 			},
-			"dependsOn":["Make Directories"],
-			"group": "build",
-		},
+			"dependsOn": [
+				"Make Directories"
+			],
+			"group": "build"
+		}
 	]
 }

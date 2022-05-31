@@ -100,6 +100,11 @@ void SNET_Client::Disconnect()
 		std::cout << "Not connected to a server.\n";
 }
 
+bool SNET_Client::PlayerExists(const UINT16 id) const
+{
+	return players.count(id) > 0;
+}
+
 void SNET_Client::OnDisconnect()
 {
 	// remove all players
@@ -120,6 +125,21 @@ SNET_NetworkedPlayer* SNET_Client::GetPlayer(const UINT16 id)
 SNET_NetworkedEntity* SNET_Client::GetEntity(const UINT16 id)
 {
 	return entities[id];
+}
+
+UINT16 SNET_Client::GetClientID() const
+{
+	return clientID;
+}
+
+std::string SNET_Client::GetUsername() const
+{
+	return username;
+}
+
+void SNET_Client::SetUsername(const std::string name)
+{
+	username = name;
 }
 
 void SNET_Client::Update()
@@ -268,21 +288,25 @@ void SNET_Client::ReceivedLeaderboardPacket(const ENetPacket* const packet)
 {
 	if (!inGame) return;
 
-	// clear leaderboard
+	leaderboard.clear();
 
 	UINT16 playerCount = *(UINT16*)packet->data;
 
 	char* dataPos = (char*)packet->data + sizeof(UINT16);
-	// populate the leaderboard
 
+	// populate the leaderboard
 	for (int i = 0; i < playerCount; ++i)
 	{
 		// create leaderboard entry
+		SNET_LeaderboardEntry* entry = (SNET_LeaderboardEntry*)dataPos;
 		// offset datapos
+		dataPos += sizeof(SNET_LeaderboardEntry);
 
-		// ignore if the entry is not present in the players list and is not equal to the current player
+		// ignore if the entry is not present in the players list and is not the client's id
+		if (players.count(entry->id) == 0 && entry->id != clientID) continue;
 
 		// push back to the leaderboard vector
+		leaderboard.push_back(*entry);
 	}
 }
 
@@ -334,7 +358,11 @@ void SNET_Client::RemovePlayer(const UINT16 id)
 
 void SNET_Client::RequestLeaderboard()
 {
-	// tell the server which sorting method to use
+	ENetPacket* packet = enet_packet_create(NULL, 0, ENET_PACKET_FLAG_RELIABLE);
+	enet_peer_send(serverPeer, SNET_CHANNEL_LEADERBOARD, packet);
+}
 
-	// create packet and send
+std::vector<SNET_LeaderboardEntry>& SNET_Client::GetLeaderboard()
+{
+	return leaderboard;
 }

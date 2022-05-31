@@ -26,9 +26,10 @@ private:
 	SNET_Func_ApplyPlayerData playerApplyDataCallback = nullptr;
 	SNET_Func_GeneratePlayerData genPlayerDataCallback = nullptr;
 
-	// leaderboard
 	std::unordered_map<UINT16, SNET_NetworkedPlayer*> players;
 	std::unordered_map<UINT16, SNET_NetworkedEntity*> entities;
+
+	std::vector<SNET_LeaderboardEntry> leaderboard;
 
 	void ReceivedPacket(const ENetEvent* const event);
 	void ReceivedConnectionPacket(const ENetPacket* const packet);
@@ -56,10 +57,18 @@ public:
 	bool Connect(const std::string ipAddress);
 	void Disconnect();
 
+	bool PlayerExists(const UINT16 id) const;
 	SNET_NetworkedPlayer* GetPlayer(const UINT16 id);
 	SNET_NetworkedEntity* GetEntity(const UINT16 id);
+
+	UINT16 GetClientID() const;
+
+	std::string GetUsername() const;
+	void SetUsername(const std::string name);
 
 	void Update();
 
 	void RequestLeaderboard();
+
+	std::vector<SNET_LeaderboardEntry>& GetLeaderboard();
 };

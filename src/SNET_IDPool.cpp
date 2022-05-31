@@ -6,11 +6,6 @@ SNET_IDPool::SNET_IDPool(const int maxValue_init) : maxIDs(maxValue_init)
 	GetNewID();
 }
 
-SNET_IDPool::~SNET_IDPool()
-{
-	
-}
-
 const int SNET_IDPool::GetNewID()
 {
 	// return -1 if it failed to get a new ID

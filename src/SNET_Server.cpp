@@ -1,5 +1,6 @@
 #include "SNET_Server.h"
 #include "SNET_NetworkedPlayer.h"
+#include "SNET_Leaderboard.h"
 #include <iostream>
 
 SNET_Server::~SNET_Server()
@@ -8,8 +9,11 @@ SNET_Server::~SNET_Server()
 	while (connectedUsers.size() > 0)
 		RemoveConnectedUser(connectedUsers.begin()->first);
 
-	if (host != nullptr)
+	if (host)
 		enet_host_destroy(host);
+
+	if (leaderboard)
+		delete leaderboard;
 
 	enet_deinitialize();
 }
@@ -37,6 +41,8 @@ int SNET_Server::Initialise()
 	}
 	
 	std::cout << "Created server on port " << hostAddress.port << "\n";
+
+	leaderboard = new SNET_Leaderboard();
 
 	return EXIT_SUCCESS;
 }
@@ -141,9 +147,11 @@ void SNET_Server::ReceivedEntityPacket(const ENetEvent* const event)
 		break;
 
 		case SNET_ENTPACKET_PLAYER:
+		{
 			SNET_Packet_PlayerData* playerPacket = (SNET_Packet_PlayerData*)event->packet->data;
 			SNET_NetworkedPlayer* player = players[playerPacket->id];
 			player->PushPacketToHistory(*playerPacket);
+		}
 		break;
 
 		default:
@@ -153,8 +161,27 @@ void SNET_Server::ReceivedEntityPacket(const ENetEvent* const event)
 
 void SNET_Server::ReceivedLeaderboardPacket(const ENetEvent* const event)
 {
-	// player requested leaderboard data. Read the packet so the server knows how to sort the leaderboard
-	
+	// figure out the total packet size
+	UINT16 playerCount = players.size();
+	size_t totalSize = sizeof(UINT16) + sizeof(SNET_LeaderboardEntry) * playerCount;
+
+	// gen a data pointer
+	char* data = new char[totalSize];
+	memcpy_s(data, sizeof(UINT16), &playerCount, sizeof(UINT16));
+
+	char* dataPos = data + sizeof(UINT16);
+	for (const auto [id, player] : players)
+	{
+		SNET_LeaderboardEntry& entry = leaderboard->GetEntry(id);
+		memcpy_s(dataPos, sizeof(SNET_LeaderboardEntry), &entry, sizeof(SNET_LeaderboardEntry));
+		dataPos += sizeof(SNET_LeaderboardEntry);
+	}
+
+	// create and send the packet
+	ENetPacket* packet = enet_packet_create(data, totalSize, ENET_PACKET_FLAG_RELIABLE);
+	enet_peer_send(event->peer, SNET_CHANNEL_LEADERBOARD, packet);
+
+	delete[] data;
 }
 
 void SNET_Server::AddConnectedUser(ENetPeer* const peer)
@@ -207,6 +234,9 @@ void SNET_Server::AddPlayer(const SNET_ConnectedUser* const user)
 	playerAddCallback(user->id);
 	
 	// include in leaderboard
+	leaderboard->AddEntry(user->id);
+	SNET_LeaderboardEntry& entry = leaderboard->GetEntry(user->id);
+	strcpy_s(entry.username, user->username.c_str());
 
 	// tell existing players of the new player's existence
 	// generate the info packet
@@ -249,11 +279,12 @@ void SNET_Server::RemovePlayer(const UINT16 id)
 	delete player;
 	players.erase(id);
 	//remove player from leaderboard
+	leaderboard->DeleteEntry(id);
 
 	// inform all users to delete that player
 	SNET_Packet_Connection conPacket;
 	conPacket.id = id;
-	conPacket.type == SNET_CONTYPE_PLAYER_LEFT;
+	conPacket.type = SNET_CONTYPE_PLAYER_LEFT;
 
 	// create the packet to inform the users that a player has left
 	ENetPacket* playerLeftPacket = enet_packet_create(&conPacket, sizeof(SNET_Packet_Connection), ENET_PACKET_FLAG_RELIABLE);
@@ -269,13 +300,13 @@ void SNET_Server::UpdatePingValues()
 		if (!HasPlayerJoined(user->id)) continue;
 
 		// update ping value here
+		leaderboard->GetEntry(user->id).ping = peer->roundTripTime;
 	}
 }
 
+// read latest player data and create a packet using the data
 void SNET_Server::BroadcastData()
 {
-	// read latest player data and create a packet using the data
-
 	// get player count
 	UINT16 playerCount = (UINT16)players.size();
 	size_t totalSize = sizeof(UINT16) + sizeof(SNET_Packet_PlayerData) * playerCount;
@@ -283,7 +314,6 @@ void SNET_Server::BroadcastData()
 	char* totalData = new char[totalSize]();
 
 	// copy in the number of players
-
 	memcpy_s(totalData, sizeof(UINT16), &playerCount, sizeof(UINT16));
 
 	// copy in each player's data
@@ -311,7 +341,7 @@ void SNET_Server::VerifyData()
 {
 	for (const auto [id, player] : players)
 	{
-		// callback to verify if data is all goods
+		// callback to verify and apply the data to the player
 		playerApplyDataCallback(player);
 	}
 }

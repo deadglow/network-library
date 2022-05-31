@@ -18,7 +18,7 @@ private:
 	ENetHost* host = nullptr;
 	SNET_IDPool userIDs { UINT16_MAX };
 	SNET_IDPool entityIDs { UINT16_MAX };
-	SNET_Leaderboard* leaderboard;
+	SNET_Leaderboard* leaderboard = nullptr;
 	std::unordered_map<ENetPeer*, SNET_ConnectedUser*> connectedUsers;
 	std::unordered_map<UINT16, SNET_NetworkedPlayer*> players;
 	std::unordered_map<UINT16, SNET_NetworkedEntity*> entities;
