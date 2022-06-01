@@ -11,7 +11,7 @@
 			"group": "none"
 		},
 		{
-			"label": "Create Lib/Include Folder",
+			"label": "StrafeNet Create Deployment",
 			"type": "process",
 			"command": "${workspaceFolder}\\make_deployment.bat",
 			"options": {
@@ -20,7 +20,7 @@
 			"group": "none"
 		},
 		{
-			"label": "Copy Lib/Include to FPS Project",
+			"label": "StrafeNet Copy Deployment to FPS Project",
 			"type": "process",
 			"command": "${workspaceFolder}\\copy_to_fps_project.bat",
 			"options": {
@@ -29,7 +29,7 @@
 			"group": "none"
 		},
 		{
-			"label": "Debug Batch Build",
+			"label": "StrafeNet Debug Build",
 			"type": "process",
 			"command": "${workspaceFolder}\\build_debug.bat",
 			"options": {
@@ -42,16 +42,16 @@
 			"problemMatcher": "$msCompile"
 		},
 		{
-			"label": "Create and copy Lib/Include to FPS Project",
+			"label": "Create and copy Deployment to FPS Project",
 			"dependsOn": [
-				"Create Lib/Include Folder",
-				"Copy Lib/Include to FPS Project"
+				"StrafeNet Create Deployment",
+				"StrafeNet Copy Deployment to FPS Project"
 			],
 			"group": "none",
 			"problemMatcher": []
 		},
 		{
-			"label": "Release Batch Build",
+			"label": "Strafenet Release Build",
 			"type": "process",
 			"command": "${workspaceFolder}\\build_release.bat",
 			"options": {

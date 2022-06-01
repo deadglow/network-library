@@ -33,12 +33,10 @@ int SNET_Client::Initialise()
 
 void SNET_Client::SetCallbacks(SNET_Func_PlayerConnection onPlayerAdd,
 	SNET_Func_PlayerConnection onPlayerRemove,
-	SNET_Func_ApplyPlayerData onApplyPlayerData,
 	SNET_Func_GeneratePlayerData onGenPlayerData)
 {
 	playerAddCallback = onPlayerAdd;
 	playerRemoveCallback = onPlayerRemove;
-	playerApplyDataCallback = onApplyPlayerData;
 	genPlayerDataCallback = onGenPlayerData;
 }
 
@@ -280,7 +278,8 @@ void SNET_Client::ReceivedEntityPacket(const ENetPacket* const packet)
 		}
 
 		// copy player data to the networked player
-		players[playerData->id]->PushPacketToHistory(*playerData);
+		SNET_NetworkedPlayer* player = players[playerData->id];
+		player->PushPacketToHistory(*playerData);
 	}
 }
 

@@ -47,7 +47,9 @@ public:
 	~SNET_Server();
 
 	int Initialise();
-	void SetCallbacks(SNET_Func_PlayerConnection onPlayerAdd, SNET_Func_PlayerConnection onPlayerRemove, SNET_Func_ApplyPlayerData onPlayerDataApply);
+	void SetCallbacks(SNET_Func_PlayerConnection onPlayerAdd,
+	SNET_Func_PlayerConnection onPlayerRemove,
+	SNET_Func_ApplyPlayerData onPlayerDataApply);
 
 	void Update();
 	

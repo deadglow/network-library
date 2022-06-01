@@ -23,7 +23,6 @@ private:
 
 	SNET_Func_PlayerConnection playerAddCallback = nullptr;
 	SNET_Func_PlayerConnection playerRemoveCallback = nullptr;
-	SNET_Func_ApplyPlayerData playerApplyDataCallback = nullptr;
 	SNET_Func_GeneratePlayerData genPlayerDataCallback = nullptr;
 
 	std::unordered_map<UINT16, SNET_NetworkedPlayer*> players;
@@ -48,7 +47,6 @@ public:
 	int Initialise();
 	void SetCallbacks(SNET_Func_PlayerConnection onPlayerAdd,
 	SNET_Func_PlayerConnection onPlayerRemove,
-	SNET_Func_ApplyPlayerData onApplyPlayerData,
 	SNET_Func_GeneratePlayerData onGenPlayerData);
 	
 	bool IsConnected() const;

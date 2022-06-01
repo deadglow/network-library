@@ -94,6 +94,11 @@ void SNET_Server::Update()
 	enet_host_flush(host);
 }
 
+bool SNET_Server::HasPlayerJoined(const UINT16 id) const
+{
+	return players.count(id) > 0;
+}
+
 void SNET_Server::ReceivedPacket(const ENetEvent* const event)
 {
 	switch((SNET_Channel)event->channelID)

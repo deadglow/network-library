@@ -7,11 +7,11 @@ class SNET_RingBuffer
 {
 private:
 	std::vector<T> vector;
-	size_t max_capacity;
-	size_t next_index = 0;
-	size_t current_size = 0;
+	int max_capacity;
+	int next_index = 0;
+	int current_size = 0;
 public:
-	SNET_RingBuffer(const size_t max_capacity_init)
+	SNET_RingBuffer(const int max_capacity_init)
 	{
 		max_capacity = max_capacity_init;
 		vector.reserve(max_capacity);
@@ -21,7 +21,7 @@ public:
 	
 	~SNET_RingBuffer() = default;
 
-	void push_back(T value)
+void push_back(T value)
 	{
 		vector[next_index] = value;
 		next_index++;
@@ -43,7 +43,7 @@ public:
 		current_size--;
 	};
 
-	T& get_at_offset(const size_t offset)
+	T& get_at_offset(const int offset)
 	{
 		if (offset < 0)
 			throw std::out_of_range("Offset is negative.");
@@ -51,7 +51,7 @@ public:
 		if (offset >= current_size)
 			throw std::out_of_range("Offset is larger than size.");
 
-		size_t index = next_index - offset - 1;
+		int index = next_index - offset - 1;
 
 		if (index < 0)
 			index += max_capacity;
@@ -59,7 +59,7 @@ public:
 		return vector[index];
 	};
 
-	const size_t size() const
+	const int size() const
 	{
 		return current_size;
 	};

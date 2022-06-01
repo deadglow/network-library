@@ -5,5 +5,5 @@ if exist %cd%\strafenet\ (
     )
     del %cd%\..\cpp-fps-project\include\strafenet\** /s /q /f
     xcopy %cd%\strafenet\include\*.h %cd%\..\cpp-fps-project\include\strafenet /y
-    xcopy %cd%\strafenet\strafenet.lib %cd%\..\cpp-fps-project\lib /y
+    xcopy %cd%\strafenet\strafenet-mtd.lib %cd%\..\cpp-fps-project\lib /y
 )
