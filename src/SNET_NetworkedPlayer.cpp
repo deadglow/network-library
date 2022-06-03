@@ -49,13 +49,3 @@ void SNET_NetworkedPlayer::OverridePacket(const int offset, const SNET_Packet_Pl
 {
 	packetDataHistory.get_at_offset(offset) = packet;
 }
-
-void SNET_NetworkedPlayer::SetUpdateFrame(UINT64 frameNumber)
-{
-	lastUpdatedFrame = frameNumber;
-}
-
-UINT64 SNET_NetworkedPlayer::GetLastUpdatedFrame() const
-{
-	return lastUpdatedFrame;
-}

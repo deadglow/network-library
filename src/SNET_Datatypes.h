@@ -116,4 +116,6 @@ struct SNET_ConnectedUser
 	ENetPeer* peer;
 	std::string username;
 	std::string ip;
+	// number of frames since last packed received
+	unsigned short packetDelay;
 };

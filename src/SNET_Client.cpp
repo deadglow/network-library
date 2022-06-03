@@ -140,8 +140,16 @@ void SNET_Client::SetUsername(const std::string name)
 	username = name;
 }
 
+unsigned int SNET_Client::GetPlayerDataReceivedDelay() const
+{
+	return playerDataReceivedDelay;
+}
+
 void SNET_Client::Update()
 {
+	// increment player packet delay
+	playerDataReceivedDelay++;
+
 	// send player data to the server
 	if (inGame)
 	{
@@ -257,29 +265,40 @@ void SNET_Client::ReceivedEntityPacket(const ENetPacket* const packet)
 {
 	if (!inGame) return;
 
-	// figure out how many player data were received
-	UINT16 playerCount = *(UINT16*)packet->data;
+	SNET_Packet_EntityData* entity = (SNET_Packet_EntityData*)packet->data;
 
-	// data pointer to the memory after the player count
-	char* dataPos = (char*)packet->data + sizeof(UINT16);
-
-	for (int i = 0; i < playerCount; ++i)
+	if (entity->type == SNET_ENTPACKET_PLAYER)
 	{
-		SNET_Packet_PlayerData* playerData = (SNET_Packet_PlayerData*)dataPos;
-		dataPos += sizeof(SNET_Packet_PlayerData);
+		// figure out how many player data were received
+		UINT16 playerCount = *(UINT16*)packet->data;
 
-		// continue if the information is about the current player
-		if (playerData->id == clientID) continue;
+		// data pointer to the memory after the player count
+		char* dataPos = (char*)packet->data + sizeof(UINT16);
 
-		if (players.count(playerData->id) == 0)
+		for (int i = 0; i < playerCount; ++i)
 		{
-			std::cout << "Player doesn't exist.\n";
-			continue;
+			SNET_Packet_PlayerData* playerData = (SNET_Packet_PlayerData*)dataPos;
+			dataPos += sizeof(SNET_Packet_PlayerData);
+
+			// continue if the information is about the current player
+			if (playerData->id == clientID) continue;
+
+			if (players.count(playerData->id) == 0)
+			{
+				std::cout << "Player doesn't exist.\n";
+				continue;
+			}
+
+			// copy player data to the networked player
+			SNET_NetworkedPlayer* player = players[playerData->id];
+			player->PushPacketToHistory(*playerData);
 		}
 
-		// copy player data to the networked player
-		SNET_NetworkedPlayer* player = players[playerData->id];
-		player->PushPacketToHistory(*playerData);
+		playerDataReceivedDelay = 0;
+	}
+	else if (entity->type == SNET_ENTPACKET_ENTITY)
+	{
+		// entity stuff
 	}
 }
 

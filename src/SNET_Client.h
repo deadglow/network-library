@@ -21,6 +21,8 @@ private:
 	ENetHost* host = nullptr;
 	ENetPeer* serverPeer = nullptr;
 
+	unsigned int playerDataReceivedDelay = 0;
+
 	SNET_Func_PlayerConnection playerAddCallback = nullptr;
 	SNET_Func_PlayerConnection playerRemoveCallback = nullptr;
 	SNET_Func_GeneratePlayerData genPlayerDataCallback = nullptr;
@@ -64,9 +66,10 @@ public:
 	std::string GetUsername() const;
 	void SetUsername(const std::string name);
 
+	unsigned int GetPlayerDataReceivedDelay() const;
+
 	void Update();
 
 	void RequestLeaderboard();
-
 	std::vector<SNET_LeaderboardEntry>& GetLeaderboard();
 };
