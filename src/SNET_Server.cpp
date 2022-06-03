@@ -314,19 +314,25 @@ void SNET_Server::BroadcastData()
 {
 	// get player count
 	UINT16 playerCount = (UINT16)players.size();
-	size_t totalSize = sizeof(UINT16) + sizeof(SNET_Packet_PlayerData) * playerCount;
+	size_t totalSize = sizeof(UINT16) + sizeof(SNET_EntityPacketType) + sizeof(SNET_Packet_PlayerData) * playerCount;
 
 	char* totalData = new char[totalSize]();
+	char* dataPos = totalData;
 
 	// copy in the number of players
-	memcpy_s(totalData, sizeof(UINT16), &playerCount, sizeof(UINT16));
+	memcpy_s(dataPos, sizeof(UINT16), &playerCount, sizeof(UINT16));
+	dataPos += sizeof(UINT16);
 
-	// copy in each player's data
-	char* dataPos = totalData + sizeof(UINT16);
+	// copy in the type of packet
+	SNET_EntityPacketType packetType = SNET_ENTPACKET_PLAYER;
+	memcpy_s(dataPos, sizeof(SNET_EntityPacketType), &packetType, sizeof(SNET_EntityPacketType));
+	dataPos += sizeof(SNET_EntityPacketType);
 
+	// default data in case the player doesn't have existing data
 	SNET_Packet_PlayerData defaultData;
 	defaultData.type = SNET_ENTPACKET_PLAYER;
 
+	// copy in each player's data
 	for (const auto [id, player] : players)
 	{
 		defaultData.id = player->GetID();

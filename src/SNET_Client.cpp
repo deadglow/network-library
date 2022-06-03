@@ -265,17 +265,18 @@ void SNET_Client::ReceivedEntityPacket(const ENetPacket* const packet)
 {
 	if (!inGame) return;
 
-	SNET_Packet_EntityData* entity = (SNET_Packet_EntityData*)packet->data;
+	char* dataPos = (char*)packet->data;
+	// figure out how many player data were received
+	UINT16 packetCount = *(UINT16*)dataPos;
+	dataPos += sizeof(UINT16);
 
-	if (entity->type == SNET_ENTPACKET_PLAYER)
+	// figure out the type of entity packet it is
+	SNET_EntityPacketType packetType = *(SNET_EntityPacketType*)dataPos;
+	dataPos += sizeof(SNET_EntityPacketType);
+
+	if (packetType == SNET_ENTPACKET_PLAYER)
 	{
-		// figure out how many player data were received
-		UINT16 playerCount = *(UINT16*)packet->data;
-
-		// data pointer to the memory after the player count
-		char* dataPos = (char*)packet->data + sizeof(UINT16);
-
-		for (int i = 0; i < playerCount; ++i)
+		for (int i = 0; i < packetCount; ++i)
 		{
 			SNET_Packet_PlayerData* playerData = (SNET_Packet_PlayerData*)dataPos;
 			dataPos += sizeof(SNET_Packet_PlayerData);
@@ -296,7 +297,7 @@ void SNET_Client::ReceivedEntityPacket(const ENetPacket* const packet)
 
 		playerDataReceivedDelay = 0;
 	}
-	else if (entity->type == SNET_ENTPACKET_ENTITY)
+	else if (packetType == SNET_ENTPACKET_ENTITY)
 	{
 		// entity stuff
 	}
@@ -370,6 +371,9 @@ void SNET_Client::RemovePlayer(const UINT16 id)
 	std::string deletedName = players[id]->GetUsername();
 	delete players[id];
 	players.erase(id);
+
+	// perform callback
+	playerRemoveCallback(id);
 
 	std::cout << "Player (" << id << ") " << deletedName << " has left.\n";
 }
