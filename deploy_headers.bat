@@ -3,8 +3,5 @@ if NOT exist %cd%\strafenet\ (
     mkdir %cd%\strafenet
     mkdir %cd%\strafenet\include
 )
-del %cd%\strafenet\** /s /q /f
-if exist %cd%\bin\debug\strafenet-mtd.lib (
-    XCOPY %cd%\bin\debug\strafenet-mtd.lib %cd%\strafenet /Y
-)
+del %cd%\strafenet\include\** /s /q /f
 XCOPY %cd%\src\*.h %cd%\strafenet\include /Y

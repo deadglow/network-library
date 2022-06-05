@@ -51,25 +51,33 @@ public:
 	SNET_Func_PlayerConnection onPlayerRemove,
 	SNET_Func_GeneratePlayerData onGenPlayerData);
 	
+	// Whether the player is connected to the server
 	bool IsConnected() const;
+	// Whether the player has joined the game as a player on the server
 	bool IsInGame() const;
 
+	// Attempts to connect to a given ip string
 	bool Connect(const std::string ipAddress);
 	void Disconnect();
 
-	bool PlayerExists(const UINT16 id) const;
+	// Check if a player with a given ID exists
+	bool GetPlayerExists(const UINT16 id) const;
 	SNET_NetworkedPlayer* GetPlayer(const UINT16 id);
 	SNET_NetworkedEntity* GetEntity(const UINT16 id);
 
+	// Get the user ID of the client (as determined by the server)
 	UINT16 GetClientID() const;
 
 	std::string GetUsername() const;
 	void SetUsername(const std::string name);
 
+	// Number of network updates since the client received player data from the server
 	unsigned int GetPlayerDataReceivedDelay() const;
 
 	void Update();
 
+	// Asks the server for updated leaderboard data
 	void RequestLeaderboard();
+	// Returns a reference to the last leaderboard data vector received from the server
 	std::vector<SNET_LeaderboardEntry>& GetLeaderboard();
 };

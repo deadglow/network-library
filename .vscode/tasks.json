@@ -11,22 +11,58 @@
 			"group": "none"
 		},
 		{
-			"label": "StrafeNet Create Deployment",
+			"label": "Deploy Header Files",
 			"type": "process",
-			"command": "${workspaceFolder}\\make_deployment.bat",
+			"command": "${workspaceFolder}\\deploy_headers.bat",
 			"options": {
 				"cwd": "${workspaceFolder}"
 			},
 			"group": "none"
 		},
 		{
-			"label": "StrafeNet Copy Deployment to FPS Project",
+			"label": "StrafeNet Create Debug Deployment",
+			"type": "process",
+			"command": "${workspaceFolder}\\deploy_debug_lib.bat",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "none",
+			"dependsOn": [
+				"Deploy Header Files"
+			],
+			"problemMatcher": []
+		},
+		{
+			"label": "StrafeNet Create Release Deployment",
+			"type": "process",
+			"command": "${workspaceFolder}\\deploy_release_lib.bat",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "none",
+			"dependsOn": [
+				"Deploy Header Files"
+			],
+			"problemMatcher": []
+		},
+		{
+			"label": "StrafeNet Copy Deployments to FPS Project",
 			"type": "process",
 			"command": "${workspaceFolder}\\copy_to_fps_project.bat",
 			"options": {
 				"cwd": "${workspaceFolder}"
 			},
 			"group": "none"
+		},
+		{
+			"label": "StrafeNet Create and Copy Deployment to FPS Project",
+			"dependsOn": [
+				"StrafeNet Create Debug Deployment",
+				"StrafeNet Create Release Deployment",
+				"StrafeNet Copy Deployments to FPS Project"
+			],
+			"group": "none",
+			"problemMatcher": []
 		},
 		{
 			"label": "StrafeNet Debug Build",
@@ -40,15 +76,6 @@
 			],
 			"group": "build",
 			"problemMatcher": "$msCompile"
-		},
-		{
-			"label": "Create and copy Deployment to FPS Project",
-			"dependsOn": [
-				"StrafeNet Create Deployment",
-				"StrafeNet Copy Deployment to FPS Project"
-			],
-			"group": "none",
-			"problemMatcher": []
 		},
 		{
 			"label": "Strafenet Release Build",

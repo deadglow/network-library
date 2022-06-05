@@ -98,7 +98,7 @@ void SNET_Client::Disconnect()
 		std::cout << "Not connected to a server.\n";
 }
 
-bool SNET_Client::PlayerExists(const UINT16 id) const
+bool SNET_Client::GetPlayerExists(const UINT16 id) const
 {
 	return players.count(id) > 0;
 }
@@ -240,6 +240,8 @@ void SNET_Client::ReceivedConnectionPacket(const ENetPacket* const packet)
 
 		case SNET_CONTYPE_SERVERINFO:
 		{
+			// Server info received from the server. Store it and then tell the server about the client info.
+
 			SNET_Packet_ServerInfo* infoPacket = (SNET_Packet_ServerInfo*)packet->data;
 			clientID = infoPacket->id;
 			servername = std::string(infoPacket->servername);
@@ -299,7 +301,7 @@ void SNET_Client::ReceivedEntityPacket(const ENetPacket* const packet)
 	}
 	else if (packetType == SNET_ENTPACKET_ENTITY)
 	{
-		// entity stuff
+		// entity stuff, probably won't bother with this for now
 	}
 }
 
@@ -368,6 +370,7 @@ void SNET_Client::RemovePlayer(const UINT16 id)
 		return;
 	}
 
+	// store the name of the player so we can report it to the server
 	std::string deletedName = players[id]->GetUsername();
 	delete players[id];
 	players.erase(id);

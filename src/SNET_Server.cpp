@@ -172,9 +172,10 @@ void SNET_Server::ReceivedLeaderboardPacket(const ENetEvent* const event)
 
 	// gen a data pointer
 	char* data = new char[totalSize];
-	memcpy_s(data, sizeof(UINT16), &playerCount, sizeof(UINT16));
+	char* dataPos = data;
+	memcpy_s(dataPos, sizeof(UINT16), &playerCount, sizeof(UINT16));
+	dataPos += sizeof(UINT16);
 
-	char* dataPos = data + sizeof(UINT16);
 	for (const auto [id, player] : players)
 	{
 		SNET_LeaderboardEntry& entry = leaderboard->GetEntry(id);
@@ -240,8 +241,6 @@ void SNET_Server::AddPlayer(const SNET_ConnectedUser* const user)
 	
 	// include in leaderboard
 	leaderboard->AddEntry(user->id);
-	SNET_LeaderboardEntry& entry = leaderboard->GetEntry(user->id);
-	strcpy_s(entry.username, user->username.c_str());
 
 	// tell existing players of the new player's existence
 	// generate the info packet

@@ -16,12 +16,15 @@ public:
 	UINT16 GetID() const;
 	std::string GetUsername() const;
 
+	// Adds a player data packet to the front of the cyclic packet history
 	void PushPacketToHistory(const SNET_Packet_PlayerData packet);
 
+	// Number of packets added to the cyclic packet history
 	const size_t GetPacketCount() const;
 
+	// Gets the Nth packet before the latest packet
 	SNET_Packet_PlayerData GetPacket(const int offset);
-	SNET_Packet_PlayerData GetInterpolatedPacket(const float t);
 
+	// Override the Nth packet before the latest packet
 	void OverridePacket(const int offset, const SNET_Packet_PlayerData& packet);
 };

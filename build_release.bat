@@ -9,6 +9,6 @@ cl /Zi /EHsc /nologo /std:c++17 /c ^
 %cd%\src\*.cpp 
 
 lib /nologo ^
-/OUT:%cd%\bin\release\strafenet-mt.lib %cd%\obj\debug\*.obj /LIBPATH:%cd%\lib ^
+/OUT:%cd%\bin\release\strafenet-mt.lib %cd%\obj\release\*.obj /LIBPATH:%cd%\lib ^
 enet64.lib ^
 ws2_32.lib winmm.lib

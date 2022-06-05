@@ -30,6 +30,5 @@ struct SNET_Packet_EntityData
 struct SNET_LeaderboardEntry_Base
 {
 	UINT16 id = 0;
-	char username[SNET_USERNAME_MAX];
-	UINT16 ping;
+	UINT16 ping = 0;
 };

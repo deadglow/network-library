@@ -51,8 +51,10 @@ public:
 	SNET_Func_PlayerConnection onPlayerRemove,
 	SNET_Func_ApplyPlayerData onPlayerDataApply);
 
+	// Call every update frame
 	void Update();
 	
+	// Check if a player is connected and in the game as a player
 	bool HasPlayerJoined(const UINT16 id) const;
 	
 	const size_t GetPlayerCount() const;

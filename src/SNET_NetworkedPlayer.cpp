@@ -31,20 +31,6 @@ SNET_Packet_PlayerData SNET_NetworkedPlayer::GetPacket(const int offset)
 	return packetDataHistory.get_at_offset(offset);
 }
 
-SNET_Packet_PlayerData SNET_NetworkedPlayer::GetInterpolatedPacket(const float t)
-{
-	SNET_Packet_PlayerData newPacket;
-	if (packetDataHistory.size() == 0)
-		return newPacket;
-
-	SNET_Packet_PlayerData latestPacket = packetDataHistory.get_at_offset(0);
-	SNET_Packet_PlayerData latestPacket2 = (packetDataHistory.size() > 1)? packetDataHistory.get_at_offset(1) : latestPacket;
-	
-	// interpolate packet here
-
-	return newPacket;
-}
-
 void SNET_NetworkedPlayer::OverridePacket(const int offset, const SNET_Packet_PlayerData& packet)
 {
 	packetDataHistory.get_at_offset(offset) = packet;
