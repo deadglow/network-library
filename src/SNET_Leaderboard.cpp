@@ -1,7 +1,6 @@
 #include "SNET_Leaderboard.h"
 #include <iostream>
 
-
 void SNET_Leaderboard::AddEntry(const UINT16 id)
 {
     SNET_LeaderboardEntry entry;

@@ -1,6 +1,5 @@
 #include "SNET_Server.h"
 #include "SNET_NetworkedPlayer.h"
-#include "SNET_Leaderboard.h"
 #include <iostream>
 
 SNET_Server::~SNET_Server()
@@ -366,7 +365,7 @@ SNET_NetworkedPlayer* SNET_Server::GetPlayer(const UINT16 id)
 	return players[id];
 }
 
-SNET_NetworkedEntity* SNET_Server::GetEntity(const UINT16 id)
-{
-	return entities[id];
-}
+// SNET_NetworkedEntity* SNET_Server::GetEntity(const UINT16 id)
+// {
+// 	return entities[id];
+// }

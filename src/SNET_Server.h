@@ -1,15 +1,12 @@
 #pragma once
 #include "enet/enet.h"
-#include "SNET_Packets.h"
-#include "SNET_IDPool.h"
 #include <unordered_map>
 
-#include "SNET_Typedefs.h"
+#include "SNET_IDPool.h"
+#include "SNET_Definitions.h"
+#include "SNET_Leaderboard.h"
 
-struct SNET_ConnectedUser;
 class SNET_NetworkedPlayer;
-class SNET_NetworkedEntity;
-class SNET_Leaderboard;
 
 class SNET_Server
 {
@@ -21,7 +18,7 @@ private:
 	SNET_Leaderboard* leaderboard = nullptr;
 	std::unordered_map<ENetPeer*, SNET_ConnectedUser*> connectedUsers;
 	std::unordered_map<UINT16, SNET_NetworkedPlayer*> players;
-	std::unordered_map<UINT16, SNET_NetworkedEntity*> entities;
+	//std::unordered_map<UINT16, SNET_NetworkedEntity*> entities;
 
 	SNET_Func_PlayerConnection playerAddCallback = nullptr;
 	SNET_Func_PlayerConnection playerRemoveCallback = nullptr;
@@ -60,5 +57,5 @@ public:
 	const size_t GetPlayerCount() const;
 
 	SNET_NetworkedPlayer* GetPlayer(const UINT16 id);
-	SNET_NetworkedEntity* GetEntity(const UINT16 id);
+	//SNET_NetworkedEntity* GetEntity(const UINT16 id);
 };

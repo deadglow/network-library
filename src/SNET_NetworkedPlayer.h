@@ -1,5 +1,5 @@
 #pragma once
-#include "SNET_Packets.h"
+#include "SNET_Definitions.h"
 #include "SNET_RingBuffer.h"
 
 class SNET_NetworkedPlayer

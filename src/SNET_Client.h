@@ -2,10 +2,9 @@
 #include "enet/enet.h"
 #include <vector>
 #include <unordered_map>
-#include "SNET_Typedefs.h"
+#include "SNET_Definitions.h"
 
 class SNET_NetworkedPlayer;
-class SNET_NetworkedEntity;
 
 class SNET_Client
 {
@@ -28,7 +27,7 @@ private:
 	SNET_Func_GeneratePlayerData genPlayerDataCallback = nullptr;
 
 	std::unordered_map<UINT16, SNET_NetworkedPlayer*> players;
-	std::unordered_map<UINT16, SNET_NetworkedEntity*> entities;
+	//std::unordered_map<UINT16, SNET_NetworkedEntity*> entities;
 
 	std::vector<SNET_LeaderboardEntry> leaderboard;
 
@@ -63,7 +62,7 @@ public:
 	// Check if a player with a given ID exists
 	bool GetPlayerExists(const UINT16 id) const;
 	SNET_NetworkedPlayer* GetPlayer(const UINT16 id);
-	SNET_NetworkedEntity* GetEntity(const UINT16 id);
+	//SNET_NetworkedEntity* GetEntity(const UINT16 id);
 
 	// Get the user ID of the client (as determined by the server)
 	UINT16 GetClientID() const;

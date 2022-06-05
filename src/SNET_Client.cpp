@@ -120,10 +120,10 @@ SNET_NetworkedPlayer* SNET_Client::GetPlayer(const UINT16 id)
 	return players[id];
 }
 
-SNET_NetworkedEntity* SNET_Client::GetEntity(const UINT16 id)
-{
-	return entities[id];
-}
+// SNET_NetworkedEntity* SNET_Client::GetEntity(const UINT16 id)
+// {
+// 	return entities[id];
+// }
 
 UINT16 SNET_Client::GetClientID() const
 {

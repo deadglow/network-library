@@ -1,6 +1,6 @@
 #pragma once
 #include <unordered_map>
-#include "SNET_UserDefined.h"
+#include "SNET_Definitions.h"
 
 class SNET_Leaderboard
 {
