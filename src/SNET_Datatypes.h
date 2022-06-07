@@ -1,14 +1,6 @@
 #include "enet/enet.h"
+#include "SNET_Config.h"
 #include <string>
-
-#define SNET_SERVERNAME_MAX 32
-#define SNET_USERNAME_MAX 32
-
-#define SNET_DEFAULT_PORT 3453
-#define SNET_MAX_CONNECTIONS 16
-#define SNET_CONNECTION_TIMEOUT 5000
-#define SNET_PLAYER_DATA_HISTORY_SIZE 5
-#define SNET_ENTITY_DATA_HISTORY_SIZE 3
 
 // --------------------------------------------
 //		ENUMS
