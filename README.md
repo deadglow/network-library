@@ -1,2 +1,2 @@
 # strafenet
-A network library using ENet with client side prediction designed for an FPS project.
+An (incomplete) network library using ENet with interpolation, designed for an FPS project. Made for the AIE Complex Games System Assessment.
